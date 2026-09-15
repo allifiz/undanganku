@@ -1,0 +1,136 @@
+(() => {
+  'use strict';
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const sections = [...document.querySelectorAll('.section')];
+
+  document.documentElement.classList.add('premium-ready');
+
+  /* Stagger existing reveal elements without creating extra wrappers. */
+  document.querySelectorAll('.section').forEach((section) => {
+    section.querySelectorAll('.reveal-on-scroll, .reveal-up').forEach((element, index) => {
+      element.style.setProperty('--motion-index', String(Math.min(index, 8)));
+    });
+  });
+
+  /* One lightweight veil per section. It only fades once. */
+  sections.forEach((section) => {
+    if (section.querySelector(':scope > .scene-veil')) return;
+    const veil = document.createElement('div');
+    veil.className = 'scene-veil';
+    veil.setAttribute('aria-hidden', 'true');
+    section.appendChild(veil);
+  });
+
+  const sceneObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        const section = entry.target;
+        if (entry.isIntersecting) {
+          section.classList.add('scene-active', 'scene-seen');
+        } else {
+          section.classList.remove('scene-active');
+        }
+      });
+    },
+    {
+      root: null,
+      rootMargin: '-18% 0px -18% 0px',
+      threshold: 0.08,
+    },
+  );
+
+  sections.forEach((section) => sceneObserver.observe(section));
+
+  /* Pointer light follows the user only on devices that actually have a mouse.
+   * One rAF at most per pointer frame, updating two CSS custom properties.
+   */
+  if (!reducedMotion && finePointer) {
+    let raf = 0;
+    let pointerX = window.innerWidth / 2;
+    let pointerY = window.innerHeight * 0.4;
+
+    const paintPointer = () => {
+      raf = 0;
+      const x = Math.max(0, Math.min(100, (pointerX / window.innerWidth) * 100));
+      const y = Math.max(0, Math.min(100, (pointerY / window.innerHeight) * 100));
+      document.documentElement.style.setProperty('--mx', `${x.toFixed(2)}%`);
+      document.documentElement.style.setProperty('--my', `${y.toFixed(2)}%`);
+    };
+
+    window.addEventListener('pointermove', (event) => {
+      pointerX = event.clientX;
+      pointerY = event.clientY;
+      if (!raf) raf = requestAnimationFrame(paintPointer);
+    }, { passive: true });
+  }
+
+  /* Add a slight center emphasis to the horizontal gallery.
+   * Transform-only and disabled on reduced-motion devices.
+   */
+  const gallery = document.getElementById('galleryTrack');
+  if (gallery && !reducedMotion) {
+    let galleryRaf = 0;
+
+    const updateGalleryDepth = () => {
+      galleryRaf = 0;
+      const bounds = gallery.getBoundingClientRect();
+      const center = bounds.left + bounds.width / 2;
+      const cards = gallery.querySelectorAll('.gallery-card');
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenter = rect.left + rect.width / 2;
+        const distance = Math.min(1, Math.abs(cardCenter - center) / Math.max(1, bounds.width * 0.72));
+        const scale = 1 - distance * 0.035;
+        const opacity = 1 - distance * 0.16;
+        card.style.setProperty('--gallery-scale', scale.toFixed(3));
+        card.style.opacity = String(opacity.toFixed(3));
+      });
+    };
+
+    gallery.addEventListener('scroll', () => {
+      if (!galleryRaf) galleryRaf = requestAnimationFrame(updateGalleryDepth);
+    }, { passive: true });
+
+    window.addEventListener('resize', () => {
+      if (!galleryRaf) galleryRaf = requestAnimationFrame(updateGalleryDepth);
+    }, { passive: true });
+
+    requestAnimationFrame(updateGalleryDepth);
+  }
+
+  /* Event cards receive a very small tilt on desktop only. */
+  if (!reducedMotion && finePointer) {
+    document.querySelectorAll('.event-card').forEach((card) => {
+      let raf = 0;
+      let rx = 0;
+      let ry = 0;
+
+      const render = () => {
+        raf = 0;
+        card.style.transform = `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translate3d(0,-2px,0)`;
+      };
+
+      card.addEventListener('pointermove', (event) => {
+        const rect = card.getBoundingClientRect();
+        const nx = (event.clientX - rect.left) / rect.width - 0.5;
+        const ny = (event.clientY - rect.top) / rect.height - 0.5;
+        ry = nx * 2.2;
+        rx = ny * -2.2;
+        if (!raf) raf = requestAnimationFrame(render);
+      }, { passive: true });
+
+      card.addEventListener('pointerleave', () => {
+        rx = 0;
+        ry = 0;
+        card.style.transition = 'transform .7s cubic-bezier(.16,1,.3,1), box-shadow .7s ease';
+        if (!raf) raf = requestAnimationFrame(render);
+        window.setTimeout(() => {
+          card.style.transition = '';
+        }, 720);
+      });
+    });
+  }
+})();
