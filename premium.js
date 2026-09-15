@@ -177,3 +177,35 @@
   stylesheet.onerror = loadFlow;
   document.head.appendChild(stylesheet);
 })();
+
+/* Load the gesture-driven gallery after continuity is present. The short wait
+ * avoids competing with the chapter/flow setup while still degrading safely. */
+(() => {
+  let attempts = 0;
+
+  const loadImmersion = () => {
+    if (document.querySelector('link[data-immersion]')) return;
+    const css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = './immersion.css?v=1';
+    css.dataset.immersion = 'true';
+    css.onload = () => {
+      const script = document.createElement('script');
+      script.src = './immersion.js?v=1';
+      script.async = false;
+      document.head.appendChild(script);
+    };
+    document.head.appendChild(css);
+  };
+
+  const waitForContinuity = () => {
+    if (document.querySelector('.continuity-fx-layer') || attempts >= 80) {
+      loadImmersion();
+      return;
+    }
+    attempts += 1;
+    window.setTimeout(waitForContinuity, 50);
+  };
+
+  waitForContinuity();
+})();
