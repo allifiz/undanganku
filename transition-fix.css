@@ -1,0 +1,203 @@
+/* True cross-section color blending.
+ * The previous version used short decorative bands. This layer replaces them
+ * with long bridges that overlap both scenes so the eye never meets a hard cut.
+ */
+
+:root {
+  --bridge-dark: #0b0c0c;
+  --bridge-paper: #eadfce;
+  --bridge-paper-warm: #e5d6c2;
+  --bridge-paper-soft: #f2e8da;
+}
+
+/* Kill the old decorative lower-edge band except for the full-photo scene,
+ * whose ::after is also used as an internal cinematic overlay. */
+.section:not(.photo-story):not(.closing-section)::after {
+  display: none !important;
+}
+
+/* Remove accidental seams created by fractional layout pixels. */
+.section + .section {
+  margin-top: -1px;
+}
+
+/* One long bridge instead of a short strip. It starts well inside the previous
+ * scene and continues into the next scene. */
+.section:not(.opening)::before {
+  top: -210px !important;
+  height: 290px !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 8 !important;
+  opacity: 1 !important;
+  pointer-events: none;
+  transform: translateZ(0);
+}
+
+/* NIGHT -> PAPER
+ * Opening into Our Story: intentionally long and warm so black slowly becomes ivory. */
+.opening + .story::before {
+  background: linear-gradient(
+    to bottom,
+    #0b0c0c 0%,
+    #101110 10%,
+    #1d1c19 22%,
+    #39342d 36%,
+    #62584b 49%,
+    #8e806c 61%,
+    #b5a58f 72%,
+    #d1c2ae 82%,
+    #e2d5c3 91%,
+    #eadfce 100%
+  ) !important;
+}
+
+/* PAPER -> PHOTO
+ * Keep the paper opaque first, then let the image appear gradually underneath. */
+.story + .photo-story::before {
+  background: linear-gradient(
+    to bottom,
+    #e7dbc9 0%,
+    rgba(231,219,201,.98) 12%,
+    rgba(211,197,177,.91) 28%,
+    rgba(173,155,134,.72) 44%,
+    rgba(104,91,77,.48) 61%,
+    rgba(42,39,35,.24) 78%,
+    rgba(15,16,15,0) 100%
+  ) !important;
+}
+
+/* PHOTO -> NIGHT */
+.photo-story + .date-scene::before {
+  background: linear-gradient(
+    to bottom,
+    rgba(8,9,9,0) 0%,
+    rgba(9,10,10,.18) 18%,
+    rgba(9,10,10,.43) 38%,
+    rgba(9,10,10,.68) 58%,
+    rgba(9,10,10,.87) 78%,
+    #0b0c0c 100%
+  ) !important;
+}
+
+/* NIGHT -> WARM INVITATION PAPER */
+.date-scene + .invitation-section::before {
+  background: linear-gradient(
+    to bottom,
+    #0a0b0b 0%,
+    #121311 11%,
+    #26231e 25%,
+    #4d4439 41%,
+    #776956 56%,
+    #a49279 70%,
+    #c6b39a 82%,
+    #ddcdb8 92%,
+    #eadfce 100%
+  ) !important;
+}
+
+/* WARM PAPER -> NIGHT GALLERY */
+.invitation-section + .gallery-section::before {
+  background: linear-gradient(
+    to bottom,
+    #e7dac8 0%,
+    #d8c8b4 13%,
+    #b4a28b 29%,
+    #84735f 45%,
+    #554b40 60%,
+    #302c27 73%,
+    #1a1a18 85%,
+    #0d0f0f 100%
+  ) !important;
+}
+
+/* NIGHT GALLERY -> RSVP PAPER */
+.gallery-section + .rsvp-section::before {
+  background: linear-gradient(
+    to bottom,
+    #0b0d0d 0%,
+    #151614 12%,
+    #2e2b26 27%,
+    #5a5145 43%,
+    #8e7f6b 58%,
+    #bbaa92 72%,
+    #d9cbb8 85%,
+    #eee3d5 100%
+  ) !important;
+}
+
+/* RSVP PAPER -> NIGHT GUESTBOOK */
+.rsvp-section + .guestbook-section::before {
+  background: linear-gradient(
+    to bottom,
+    #eee3d5 0%,
+    #dacbb8 13%,
+    #b3a28b 29%,
+    #81725f 45%,
+    #51483c 60%,
+    #2d2924 74%,
+    #181817 87%,
+    #0b0d0d 100%
+  ) !important;
+}
+
+/* NIGHT -> NIGHT should be invisible as a boundary, not a glowing strip. */
+.guestbook-section + .closing-section::before {
+  background: linear-gradient(
+    to bottom,
+    #0b0d0d 0%,
+    #0a0c0c 45%,
+    #080909 100%
+  ) !important;
+}
+
+/* Give the first part of light scenes a compatible vertical tone too. This means
+ * the bridge does not end and suddenly reveal a different flat color. */
+.story {
+  background:
+    linear-gradient(to bottom, #eadfce 0, #eee4d6 170px, transparent 360px),
+    radial-gradient(circle at 9% 8%, rgba(176,137,88,.14), transparent 21%),
+    radial-gradient(circle at 87% 38%, rgba(255,255,255,.38), transparent 26%),
+    linear-gradient(145deg, #eadfce 0%, #f4ecdf 48%, #e7d8c4 100%) !important;
+  background-blend-mode: normal, soft-light, normal, normal;
+}
+
+.invitation-section {
+  background:
+    linear-gradient(to bottom, #eadfce 0, rgba(234,223,206,.72) 180px, transparent 390px),
+    radial-gradient(circle at 84% 13%, rgba(255,255,255,.48), transparent 18%),
+    radial-gradient(circle at 8% 78%, rgba(151,112,68,.16), transparent 27%),
+    linear-gradient(135deg, #cdbba3 0%, #ede1d1 42%, #f3eadf 62%, #ccb89e 100%) !important;
+  background-blend-mode: normal, soft-light, normal, normal;
+}
+
+.rsvp-section {
+  background:
+    linear-gradient(to bottom, #eee3d5 0, rgba(238,227,213,.76) 170px, transparent 370px),
+    radial-gradient(circle at 12% 14%, rgba(157,121,77,.13), transparent 25%),
+    radial-gradient(circle at 89% 77%, rgba(203,174,132,.22), transparent 24%),
+    linear-gradient(135deg, #f6eee3 0%, #e7dac8 100%) !important;
+  background-blend-mode: normal, soft-light, normal, normal;
+}
+
+/* Mobile needs a slightly shorter bridge, but still long enough to read as a fade. */
+@media (max-width: 680px) {
+  .section:not(.opening)::before {
+    top: -165px !important;
+    height: 235px !important;
+  }
+
+  .story {
+    background:
+      linear-gradient(to bottom, #eadfce 0, #eee4d6 135px, transparent 300px),
+      radial-gradient(circle at 9% 8%, rgba(176,137,88,.14), transparent 21%),
+      radial-gradient(circle at 87% 38%, rgba(255,255,255,.38), transparent 26%),
+      linear-gradient(145deg, #eadfce 0%, #f4ecdf 48%, #e7d8c4 100%) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section:not(.opening)::before {
+    transform: none;
+  }
+}
