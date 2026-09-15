@@ -134,16 +134,32 @@
 })();
 
 (() => {
+  const loadContinuity = () => {
+    const continuityCss = document.createElement('link');
+    continuityCss.rel = 'stylesheet';
+    continuityCss.href = './continuity-fix.css?v=1';
+    continuityCss.onload = () => {
+      const continuityJs = document.createElement('script');
+      continuityJs.src = './continuity-fix.js?v=1';
+      continuityJs.async = false;
+      document.head.appendChild(continuityJs);
+    };
+    document.head.appendChild(continuityCss);
+  };
+
   const loadFlow = () => {
     const flowCss = document.createElement('link');
     flowCss.rel = 'stylesheet';
-    flowCss.href = './flow.css?v=1';
+    flowCss.href = './flow.css?v=2';
     flowCss.onload = () => {
       const flowJs = document.createElement('script');
-      flowJs.src = './flow.js?v=1';
+      flowJs.src = './flow.js?v=2';
       flowJs.async = false;
+      flowJs.onload = loadContinuity;
+      flowJs.onerror = loadContinuity;
       document.head.appendChild(flowJs);
     };
+    flowCss.onerror = loadContinuity;
     document.head.appendChild(flowCss);
   };
 
