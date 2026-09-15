@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c0d0d" />
+  <meta name="description" content="Undangan pernikahan interaktif dengan pengalaman sinematik yang ringan dan mobile-first." />
+  <title>Alief & Naya — Wedding Invitation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <header class="site-header" id="siteHeader">
+    <a href="#opening" class="monogram" aria-label="Kembali ke awal">A / N</a>
+    <button class="menu-button" id="menuButton" aria-label="Buka menu" aria-expanded="false">MENU</button>
+  </header>
+
+  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true">
+    <button class="menu-close" id="menuClose" aria-label="Tutup menu">×</button>
+    <div class="menu-inner">
+      <span class="eyebrow">Navigate the story</span>
+      <a href="#opening">Home</a>
+      <a href="#story">Our Story</a>
+      <a href="#event">The Event</a>
+      <a href="#gallery">Gallery</a>
+      <a href="#rsvp">RSVP</a>
+      <a href="#guestbook">Guestbook</a>
+    </div>
+    <button class="music-control" id="musicControl" type="button" aria-pressed="false">
+      <span class="music-disc">♫</span>
+      <span id="musicLabel">Play Music</span>
+    </button>
+  </nav>
+
+  <main>
+    <section class="section dark opening" id="opening">
+      <div class="grain" aria-hidden="true"></div>
+      <div class="opening-content">
+        <p class="eyebrow reveal-up">A love story in every detail</p>
+        <h1 class="opening-title reveal-up">Two lives began<br>somewhere apart.</h1>
+        <div class="paths-stage" id="pathsStage" aria-label="Tarik kedua titik agar saling mendekat">
+          <svg class="paths-line" viewBox="0 0 1000 260" preserveAspectRatio="none" aria-hidden="true">
+            <path id="pathConnector" d="M 100 130 C 330 20, 670 240, 900 130" />
+          </svg>
+          <button class="life-dot dot-left" id="dotLeft" aria-label="Titik pertama"><span></span></button>
+          <button class="life-dot dot-right" id="dotRight" aria-label="Titik kedua"><span></span></button>
+          <div class="meeting-flare" id="meetingFlare" aria-hidden="true"></div>
+        </div>
+        <p class="drag-copy" id="dragCopy">Drag the dots closer</p>
+        <div class="names-reveal" id="namesReveal" aria-hidden="true">
+          <span class="eyebrow">...until their stories became one.</span>
+          <h2>Alief <span>&</span> Naya</h2>
+          <p>12 · 12 · 2026</p>
+        </div>
+        <a class="scroll-cue" href="#story" aria-label="Mulai cerita">
+          <span>Scroll to begin our story</span>
+          <i></i>
+        </a>
+      </div>
+    </section>
+
+    <section class="section light story" id="story">
+      <div class="section-shell story-shell">
+        <div class="story-heading section-heading reveal-on-scroll">
+          <p class="eyebrow">Different places. Same destiny.</p>
+          <h2>Our Story</h2>
+          <p class="lead">Bukan tentang berapa lama kita berjalan sendiri, tapi tentang satu momen ketika dua arah akhirnya menjadi satu.</p>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline-line" aria-hidden="true"><span></span></div>
+
+          <article class="timeline-item left reveal-on-scroll">
+            <div class="timeline-year">2019</div>
+            <div class="timeline-copy">
+              <span class="eyebrow">Different paths</span>
+              <h3>Two separate worlds</h3>
+              <p>Hari-hari berjalan biasa. Dua cerita tumbuh di tempat yang berbeda, tanpa tahu suatu saat akan saling menemukan.</p>
+            </div>
+            <figure class="photo-frame portrait">
+              <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1578359219991-efe67fa63626?auto=format&fit=crop&w=900&q=72" alt="Pasangan duduk berdua" />
+            </figure>
+          </article>
+
+          <article class="timeline-item right reveal-on-scroll">
+            <div class="timeline-year">2022</div>
+            <div class="timeline-copy">
+              <span class="eyebrow">We met</span>
+              <h3>A small hello</h3>
+              <p>Pertemuan yang tampak sederhana ternyata menjadi awal dari banyak hal yang tidak pernah kami rencanakan.</p>
+            </div>
+            <figure class="photo-frame square">
+              <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1529519195486-16945f0fb37f?auto=format&fit=crop&w=900&q=72" alt="Cincin pertunangan" />
+            </figure>
+          </article>
+
+          <article class="timeline-item left reveal-on-scroll">
+            <div class="timeline-year">2024</div>
+            <div class="timeline-copy">
+              <span class="eyebrow">The question</span>
+              <h3>Choosing each other</h3>
+              <p>Bukan janji untuk hidup sempurna. Cuma keputusan sederhana untuk terus memilih satu sama lain, setiap hari.</p>
+            </div>
+            <figure class="photo-frame landscape">
+              <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1761211488173-a7154314420a?auto=format&fit=crop&w=1100&q=72" alt="Pasangan pengantin saat golden hour" />
+            </figure>
+          </article>
+
+          <article class="timeline-item right finale reveal-on-scroll">
+            <div class="timeline-year">2026</div>
+            <div class="timeline-copy">
+              <span class="eyebrow">The beginning</span>
+              <h3>Here we are</h3>
+              <p>Dan sekarang, kami ingin kamu menjadi bagian dari halaman baru yang akan kami mulai bersama.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section photo-story" aria-label="Momen cerita">
+      <img class="story-backdrop" loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1768611263523-66d8eedcfcf7?auto=format&fit=crop&w=1600&q=74" alt="Pasangan di pantai saat matahari terbenam" />
+      <div class="photo-story-overlay"></div>
+      <div class="photo-story-copy reveal-on-scroll">
+        <p>Somewhere in between<br>all our yesterdays,</p>
+        <h2>we found our forever.</h2>
+      </div>
+    </section>
+
+    <section class="section dark date-scene" id="dateScene">
+      <div class="date-inner reveal-on-scroll">
+        <p class="eyebrow">And now...</p>
+        <h2>there is one date<br>left to remember.</h2>
+        <div class="constellation" aria-hidden="true">
+          <svg viewBox="0 0 600 260">
+            <path d="M80 180 L150 80 L248 125 L330 50 L420 118 L520 72" />
+            <circle cx="80" cy="180" r="4" />
+            <circle cx="150" cy="80" r="5" />
+            <circle cx="248" cy="125" r="3" />
+            <circle cx="330" cy="50" r="5" />
+            <circle cx="420" cy="118" r="4" />
+            <circle cx="520" cy="72" r="5" />
+          </svg>
+        </div>
+        <div class="wedding-date">12 · 12 · 2026</div>
+        <p class="date-note">A new chapter begins.<br>And you're part of it.</p>
+      </div>
+    </section>
+
+    <section class="section invitation-section" id="event">
+      <div class="invitation-wrap">
+        <div class="invitation-intro reveal-on-scroll">
+          <p class="eyebrow">A special invitation</p>
+          <h2>For You</h2>
+          <p>Geser atau tekan amplop untuk membuka detail hari yang sudah lama kami tunggu.</p>
+        </div>
+
+        <div class="envelope-stage reveal-on-scroll" id="envelopeStage">
+          <button class="envelope" id="envelope" type="button" aria-expanded="false" aria-label="Buka undangan">
+            <span class="envelope-back"></span>
+            <span class="letter-card">
+              <span class="eyebrow">Together with our families</span>
+              <strong>Alief & Naya</strong>
+              <small>request the pleasure of your company</small>
+            </span>
+            <span class="envelope-front"></span>
+            <span class="envelope-flap"></span>
+            <span class="wax-seal">A/N</span>
+          </button>
+          <span class="swipe-hint">Swipe / tap to open</span>
+        </div>
+
+        <div class="event-cards" id="eventCards">
+          <article class="event-card reveal-on-scroll">
+            <span class="event-icon">✦</span>
+            <p class="eyebrow">Akad Nikah</p>
+            <h3>Sabtu, 12 Desember 2026</h3>
+            <p>09.00 WIB</p>
+            <div class="event-divider"></div>
+            <p class="venue">The Harmony Hall</p>
+            <p>Bandung, Jawa Barat</p>
+            <a class="pill-button" href="https://maps.google.com" target="_blank" rel="noreferrer">View Location</a>
+          </article>
+
+          <article class="event-card reveal-on-scroll">
+            <span class="event-icon">✧</span>
+            <p class="eyebrow">Resepsi</p>
+            <h3>Sabtu, 12 Desember 2026</h3>
+            <p>11.00 – 14.00 WIB</p>
+            <div class="event-divider"></div>
+            <p class="venue">The Harmony Hall</p>
+            <p>Bandung, Jawa Barat</p>
+            <a class="pill-button" href="https://maps.google.com" target="_blank" rel="noreferrer">View Location</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section dark gallery-section" id="gallery">
+      <div class="section-shell gallery-shell">
+        <div class="gallery-heading reveal-on-scroll">
+          <p class="eyebrow">Same people. A thousand beautiful moments.</p>
+          <h2>Captured<br>Moments</h2>
+          <p>Geser perlahan. Setiap bingkai menyimpan cerita kecilnya sendiri.</p>
+        </div>
+
+        <div class="gallery-track" id="galleryTrack" tabindex="0" aria-label="Galeri foto">
+          <figure class="gallery-card tilt-a">
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1761211488173-a7154314420a?auto=format&fit=crop&w=900&q=72" alt="Foto pengantin golden hour" />
+            <figcaption>Golden hour, forever.</figcaption>
+          </figure>
+          <figure class="gallery-card tilt-b">
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1578359219991-efe67fa63626?auto=format&fit=crop&w=900&q=72" alt="Foto pasangan prewedding" />
+            <figcaption>Just us.</figcaption>
+          </figure>
+          <figure class="gallery-card tilt-c">
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1529519195486-16945f0fb37f?auto=format&fit=crop&w=900&q=72" alt="Detail cincin" />
+            <figcaption>The question.</figcaption>
+          </figure>
+          <figure class="gallery-card tilt-a">
+            <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1768611263523-66d8eedcfcf7?auto=format&fit=crop&w=900&q=72" alt="Pasangan di pantai" />
+            <figcaption>One horizon.</figcaption>
+          </figure>
+        </div>
+
+        <div class="gallery-progress" aria-hidden="true"><span id="galleryProgress"></span></div>
+      </div>
+    </section>
+
+    <section class="section light rsvp-section" id="rsvp">
+      <div class="rsvp-inner reveal-on-scroll">
+        <p class="eyebrow">One tiny answer means a lot to us</p>
+        <h2>Will you be there<br>when our next chapter begins?</h2>
+        <div class="rsvp-buttons" role="group" aria-label="Konfirmasi kehadiran">
+          <button class="rsvp-option primary" data-rsvp="hadir">I'll Be There</button>
+          <button class="rsvp-option secondary" data-rsvp="tidak">Sending My Love</button>
+        </div>
+        <p class="rsvp-response" id="rsvpResponse" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="section dark guestbook-section" id="guestbook">
+      <div class="section-shell guestbook-shell">
+        <div class="guestbook-intro reveal-on-scroll">
+          <p class="eyebrow">Leave a little light for us</p>
+          <h2>Your words will become<br>a star in our sky.</h2>
+          <p>Setiap ucapan membuat satu cahaya baru. Sedikit berlebihan? Mungkin. Tapi jauh lebih cantik daripada tabel komentar.</p>
+        </div>
+
+        <div class="wish-sky" id="wishSky" aria-label="Langit ucapan tamu"></div>
+
+        <form class="wish-form reveal-on-scroll" id="wishForm">
+          <label>
+            <span>Your Name</span>
+            <input id="guestName" name="guestName" type="text" maxlength="40" placeholder="Nama kamu" required />
+          </label>
+          <label>
+            <span>Your Message</span>
+            <textarea id="guestMessage" name="guestMessage" maxlength="180" placeholder="Tulis ucapanmu di sini..." required></textarea>
+          </label>
+          <button class="pill-button solid" type="submit">Add to Our Sky</button>
+        </form>
+      </div>
+    </section>
+
+    <section class="section dark closing-section" id="closing">
+      <div class="closing-inner reveal-on-scroll">
+        <div class="closing-constellation" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <p class="eyebrow">You've reached the end of this invitation.</p>
+        <h2>Not the end<br>of our story.</h2>
+        <p class="closing-date">12 · 12 · 2026</p>
+        <button class="secret-trigger" id="secretTrigger" type="button">made with a ridiculous amount of love</button>
+        <div class="infinite-line" aria-hidden="true"><span></span></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="secret-modal" id="secretModal" aria-hidden="true">
+    <button class="secret-close" id="secretClose" aria-label="Tutup foto rahasia">×</button>
+    <div class="secret-card">
+      <p class="eyebrow">You found it.</p>
+      <h2>The photo we almost didn't put here.</h2>
+      <figure>
+        <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1578359219991-efe67fa63626?auto=format&fit=crop&w=1000&q=76" alt="Foto candid pasangan" />
+        <figcaption>Life is better with you ♡</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <audio id="backgroundMusic" preload="none" loop>
+    <!-- Ganti src dengan file musik milikmu sendiri. -->
+  </audio>
+
+  <script src="./script.js" defer></script>
+</body>
+</html>
