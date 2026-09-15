@@ -201,3 +201,125 @@
     transform: none;
   }
 }
+
+/* ==========================================================
+   MOBILE FIX: opening content + smoother dark-to-paper blend
+   ========================================================== */
+
+/* Give the reveal block room to breathe before the transition begins. */
+.opening {
+  min-height: 118svh;
+}
+
+.opening-content {
+  padding-bottom: clamp(150px, 20vh, 220px);
+}
+
+.names-reveal {
+  margin-top: clamp(42px, 6vh, 72px);
+}
+
+.names-reveal.show {
+  padding-bottom: clamp(90px, 12vh, 150px);
+}
+
+.scroll-cue {
+  margin-top: 28px;
+}
+
+/* Remove the dark lower veil that was visually reading as a seam. */
+.opening > .scene-veil {
+  background: linear-gradient(
+    180deg,
+    rgba(0,0,0,.10) 0%,
+    transparent 24%,
+    transparent 100%
+  ) !important;
+}
+
+.story > .scene-veil {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.04) 0%,
+    transparent 20%,
+    transparent 100%
+  ) !important;
+}
+
+.opening::after {
+  display: none !important;
+}
+
+/* Make the first transition materially longer, with no hard dark strip. */
+.opening + .story::before {
+  top: -250px !important;
+  height: 360px !important;
+  background: linear-gradient(
+    to bottom,
+    #0b0c0c 0%,
+    #0d0e0d 8%,
+    #121310 18%,
+    #1c1b18 28%,
+    #302c26 40%,
+    #4b4339 52%,
+    #6b5f50 63%,
+    #91816d 74%,
+    #baa993 84%,
+    #dacbb8 92%,
+    #eee4d7 97%,
+    #f3eadf 100%
+  ) !important;
+}
+
+/* Continue the bridge into the light scene itself so its background does not snap. */
+.story {
+  background:
+    linear-gradient(
+      to bottom,
+      #eee4d7 0,
+      #f1e8dc 160px,
+      rgba(241,232,220,.82) 240px,
+      rgba(241,232,220,0) 360px
+    ),
+    radial-gradient(circle at 9% 8%, rgba(176,137,88,.14), transparent 21%),
+    radial-gradient(circle at 87% 38%, rgba(255,255,255,.38), transparent 26%),
+    linear-gradient(145deg, #eadfce 0%, #f4ecdf 48%, #e7d8c4 100%) !important;
+  background-blend-mode: normal, soft-light, normal, normal;
+}
+
+@media (max-width: 680px) {
+  .opening {
+    min-height: 122svh;
+  }
+
+  .opening-content {
+    padding-bottom: 190px;
+  }
+
+  .names-reveal {
+    margin-top: 38px;
+  }
+
+  .names-reveal.show {
+    padding-bottom: 120px;
+  }
+
+  .opening + .story::before {
+    top: -210px !important;
+    height: 320px !important;
+  }
+
+  .story {
+    background:
+      linear-gradient(
+        to bottom,
+        #eee4d7 0,
+        #f1e8dc 130px,
+        rgba(241,232,220,.82) 210px,
+        rgba(241,232,220,0) 320px
+      ),
+      radial-gradient(circle at 9% 8%, rgba(176,137,88,.14), transparent 21%),
+      radial-gradient(circle at 87% 38%, rgba(255,255,255,.38), transparent 26%),
+      linear-gradient(145deg, #eadfce 0%, #f4ecdf 48%, #e7d8c4 100%) !important;
+  }
+}
