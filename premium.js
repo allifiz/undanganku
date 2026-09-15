@@ -134,6 +134,19 @@
 })();
 
 (() => {
+  const loadFlow = () => {
+    const flowCss = document.createElement('link');
+    flowCss.rel = 'stylesheet';
+    flowCss.href = './flow.css?v=1';
+    flowCss.onload = () => {
+      const flowJs = document.createElement('script');
+      flowJs.src = './flow.js?v=1';
+      flowJs.async = false;
+      document.head.appendChild(flowJs);
+    };
+    document.head.appendChild(flowCss);
+  };
+
   const stylesheet = document.createElement('link');
   stylesheet.rel = 'stylesheet';
   stylesheet.href = './chapters.css?v=2';
@@ -141,7 +154,10 @@
     const script = document.createElement('script');
     script.src = './chapters.js?v=2';
     script.async = false;
+    script.onload = loadFlow;
+    script.onerror = loadFlow;
     document.head.appendChild(script);
   };
+  stylesheet.onerror = loadFlow;
   document.head.appendChild(stylesheet);
 })();
