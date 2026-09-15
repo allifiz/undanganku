@@ -172,3 +172,17 @@
   };
   document.head.appendChild(stylesheet);
 })();
+
+/* Chapter interaction layer: scene-specific interactions and transitions. */
+(() => {
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = '/chapters.css?v=1';
+  stylesheet.onload = () => {
+    const script = document.createElement('script');
+    script.src = '/chapters.js?v=1';
+    script.async = false;
+    document.head.appendChild(script);
+  };
+  document.head.appendChild(stylesheet);
+})();
