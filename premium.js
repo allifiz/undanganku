@@ -134,3 +134,41 @@
     });
   }
 })();
+
+/* Load the richer interaction layer only after its stylesheet is ready.
+ * This keeps the base invitation functional even if the enhancement fails. */
+(() => {
+  const html = document.documentElement;
+  html.classList.add('experience-loading');
+
+  const critical = document.createElement('style');
+  critical.id = 'experience-critical';
+  critical.textContent = `
+    html.experience-loading body { overflow: hidden !important; }
+    html.experience-loading body > main,
+    html.experience-loading .site-header { opacity: 0 !important; }
+  `;
+  document.head.appendChild(critical);
+
+  const loadScript = () => {
+    const script = document.createElement('script');
+    script.src = '/experience.js?v=3';
+    script.async = false;
+    script.onload = () => critical.remove();
+    script.onerror = () => {
+      html.classList.remove('experience-loading');
+      critical.remove();
+    };
+    document.head.appendChild(script);
+  };
+
+  const stylesheet = document.createElement('link');
+  stylesheet.rel = 'stylesheet';
+  stylesheet.href = '/experience.css?v=3';
+  stylesheet.onload = loadScript;
+  stylesheet.onerror = () => {
+    html.classList.remove('experience-loading');
+    critical.remove();
+  };
+  document.head.appendChild(stylesheet);
+})();
