@@ -37,7 +37,7 @@ atau VS Code Live Server.
 
 ## Data yang masih demo
 
-Saat ini nama pasangan, tanggal, lokasi, cerita, dan foto masih berupa data demo. Cari `Alief`, `Naya`, `12 · 12 · 2026`, `The Harmony Hall`, dan URL `images.unsplash.com` pada `index.html` untuk menggantinya.
+Saat ini nama pasangan, tanggal, lokasi, cerita, dan foto masih berupa data demo. Cari `Alief`, `Sinta`, `12 · 12 · 2026`, `The Harmony Hall`, dan URL `images.unsplash.com` pada `index.html` untuk menggantinya.
 
 Foto demo menggunakan gambar dari Unsplash. Untuk versi final sebaiknya foto asli dikompresi menjadi AVIF/WebP dan disimpan lokal di `assets/images/`.
 
