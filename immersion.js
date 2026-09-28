@@ -112,6 +112,10 @@
   const viewer = document.createElement('div');
   viewer.className = 'immersion-viewer';
   viewer.setAttribute('aria-hidden', 'true');
+  viewer.setAttribute('role', 'dialog');
+  viewer.setAttribute('aria-modal', 'true');
+  viewer.setAttribute('aria-label', 'Galeri foto');
+  viewer.inert = true;
   viewer.innerHTML = `
     <div class="viewer-topbar">
       <span class="viewer-kicker">Captured moments · swipe to explore</span>
@@ -257,6 +261,7 @@
     isOpen = true;
     currentIndex = index;
     sourceCard = card;
+    window.InvitationUI.openDialog(viewer, closeButton);
     const item = itemFor(index);
 
     updateMeta(index);
@@ -271,9 +276,10 @@
       if (image.decode) await image.decode();
     } catch (_) { /* cached or cross-origin decode can reject harmlessly */ }
 
+    if (!isOpen) return;
     animateFlightIn(item);
     preloadAdjacent(index);
-    closeButton.focus({ preventScroll: true });
+    if (isOpen) closeButton.focus({ preventScroll: true });
     try { navigator.vibrate?.(5); } catch (_) { /* optional */ }
   };
 
@@ -284,7 +290,7 @@
     viewer.classList.remove('memory-visible');
 
     const item = itemFor(currentIndex);
-    const target = item.card === sourceCard ? item.img : item.img;
+    const target = item.img;
     const targetRect = target?.getBoundingClientRect();
     const viewerRect = image.getBoundingClientRect();
     const canReturn = !reducedMotion && targetRect && viewerRect && targetRect.bottom > 0 && targetRect.top < window.innerHeight;
@@ -324,7 +330,7 @@
 
     viewer.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('immersive-open');
-    sourceCard?.focus?.({ preventScroll: true });
+    window.InvitationUI.closeDialog(viewer, sourceCard);
     sourceCard = null;
   };
 
@@ -335,14 +341,17 @@
     const item = itemFor(normalized);
     viewer.classList.remove('memory-visible');
 
-    media.animate([
+    const exit = media.animate([
       { transform: `translate3d(0,0,0) scale(1)` , opacity: 1 },
       { transform: `translate3d(${direction * -34}px,0,0) scale(.985)`, opacity: .18 },
     ], {
       duration: reducedMotion ? 1 : 190,
       easing: 'ease',
       fill: 'forwards',
-    }).finished.catch(() => {}).then(async () => {
+    });
+    exit.finished.catch(() => {}).then(async () => {
+      exit.cancel();
+      if (!isOpen) { switching = false; return; }
       currentIndex = normalized;
       updateMeta(currentIndex);
       image.classList.add('switching');
@@ -350,7 +359,7 @@
       try { if (image.decode) await image.decode(); } catch (_) { /* harmless */ }
       image.classList.remove('switching');
       resetGestureTransform();
-      media.animate([
+      const enter = media.animate([
         { transform: `translate3d(${direction * 30}px,0,0) scale(.985)`, opacity: .18 },
         { transform: 'translate3d(0,0,0) scale(1)', opacity: 1 },
       ], {
@@ -358,6 +367,7 @@
         easing: 'cubic-bezier(.16,1,.3,1)',
         fill: 'forwards',
       });
+      enter.finished.catch(() => {}).then(() => enter.cancel());
       preloadAdjacent(currentIndex);
       switching = false;
       try { navigator.vibrate?.(4); } catch (_) { /* optional */ }
@@ -398,8 +408,8 @@
   window.addEventListener('keydown', (event) => {
     if (!isOpen) return;
     if (event.key === 'Escape') closeViewer();
-    if (event.key === 'ArrowLeft') showIndex(currentIndex - 1, -1);
-    if (event.key === 'ArrowRight') showIndex(currentIndex + 1, 1);
+    if (event.key === 'ArrowLeft') { event.preventDefault(); showIndex(currentIndex - 1, -1); }
+    if (event.key === 'ArrowRight') { event.preventDefault(); showIndex(currentIndex + 1, 1); }
     if (event.key.toLowerCase() === 'm') viewer.classList.toggle('memory-visible');
   });
 
@@ -475,7 +485,7 @@
   };
 
   stage.addEventListener('pointerup', finishGesture);
-  stage.addEventListener('pointercancel', finishGesture);
+  stage.addEventListener('pointercancel', () => { cancelHold(); gesturePointer = null; resetGestureTransform(); });
 
   /* ---------------------------------------------------------
    * Optional device orientation depth. Permission is requested only

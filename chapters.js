@@ -74,16 +74,16 @@
       note.className = 'memory-note';
       note.textContent = memoryNotes[index];
 
-      const toggle = document.createElement('button');
-      toggle.type = 'button';
+      const toggle = document.createElement('span');
       toggle.className = 'memory-card-toggle';
-      toggle.setAttribute('aria-label', 'Buka catatan foto');
+      toggle.setAttribute('aria-hidden', 'true');
 
       frame.append(note, toggle);
 
       const setOpen = (open) => {
         frame.classList.toggle('memory-open', open);
         frame.setAttribute('aria-expanded', String(open));
+        frame.setAttribute('aria-label', open ? 'Tutup catatan kenangan' : 'Buka catatan kenangan');
       };
 
       const toggleMemory = (event) => {
@@ -91,7 +91,6 @@
         setOpen(!frame.classList.contains('memory-open'));
       };
 
-      toggle.addEventListener('click', toggleMemory);
       frame.addEventListener('click', (event) => {
         if (event.target.closest('button')) return;
         toggleMemory(event);

@@ -36,7 +36,7 @@
         <strong class="cover-guest-name"></strong>
       </div>
       <button class="cover-seal-button" type="button" aria-label="Buka undangan">
-        <span class="cover-seal-core">A/N</span>
+        <span class="cover-seal-core">A/S</span>
       </button>
       <span class="cover-open-copy">Open Invitation</span>
       <p class="cover-hint">A small story is waiting inside</p>
@@ -69,6 +69,7 @@
 
   if (!skipCover) {
     document.body.classList.add('invite-locked');
+    window.InvitationUI.openDialog(cover, $('.cover-seal-button', cover));
   } else {
     cover.remove();
     document.body.classList.add('experience-open');
@@ -109,20 +110,8 @@
     document.body.classList.remove('invite-locked');
     document.body.classList.add('experience-open');
     cover.classList.add('is-gone');
+    window.InvitationUI.closeDialog(cover, document.getElementById('menuButton'));
     window.scrollTo({ top: 0, behavior: 'auto' });
-
-    const audio = document.getElementById('backgroundMusic');
-    if (audio?.getAttribute('src')) {
-      audio.volume = 0;
-      audio.play().then(() => {
-        let volume = 0;
-        const fade = window.setInterval(() => {
-          volume = Math.min(.72, volume + .06);
-          audio.volume = volume;
-          if (volume >= .72) window.clearInterval(fade);
-        }, 70);
-      }).catch(() => { /* browser or missing media source */ });
-    }
 
     window.dispatchEvent(new CustomEvent('invitation:opened'));
     await wait(reducedMotion ? 80 : 650);
@@ -247,19 +236,25 @@
     let pointerId = null;
     let startX = 0;
     let startScroll = 0;
+    let moved = false;
 
     gallery.addEventListener('pointerdown', (event) => {
-      if (event.pointerType !== 'mouse') return;
+      if (event.pointerType !== 'mouse' || event.button !== 0) return;
       dragging = true;
       pointerId = event.pointerId;
       startX = event.clientX;
       startScroll = gallery.scrollLeft;
-      gallery.setPointerCapture(event.pointerId);
-      gallery.classList.add('xp-dragging');
+      moved = false;
     });
 
     gallery.addEventListener('pointermove', (event) => {
       if (!dragging || event.pointerId !== pointerId) return;
+      if (!moved && Math.abs(event.clientX - startX) < 8) return;
+      if (!moved) {
+        moved = true;
+        gallery.setPointerCapture(event.pointerId);
+        gallery.classList.add('xp-dragging');
+      }
       gallery.scrollLeft = startScroll - (event.clientX - startX) * 1.1;
     });
 
@@ -269,6 +264,15 @@
       gallery.classList.remove('xp-dragging');
       try { gallery.releasePointerCapture(event.pointerId); } catch (_) { /* already released */ }
     };
+    gallery.addEventListener('dragstart', (event) => event.preventDefault());
+    gallery.addEventListener('click', (event) => {
+      if (!moved) return;
+      moved = false;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    }, true);
+    gallery.addEventListener('lostpointercapture', releaseGallery);
+    gallery.addEventListener('pointerleave', (event) => { if (!moved) releaseGallery(event); });
     gallery.addEventListener('pointerup', releaseGallery);
     gallery.addEventListener('pointercancel', releaseGallery);
   }

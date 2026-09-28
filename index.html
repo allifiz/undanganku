@@ -12,16 +12,22 @@
   <link rel="stylesheet" href="./styles.css" />
   <link rel="stylesheet" href="./premium.css" />
   <link rel="stylesheet" href="./transition-fix.css" />
+  <link rel="stylesheet" href="./experience.css" />
+  <link rel="stylesheet" href="./chapters.css" />
+  <link rel="stylesheet" href="./flow.css" />
+  <link rel="stylesheet" href="./continuity-fix.css" />
+  <link rel="stylesheet" href="./immersion.css" />
+  <link rel="stylesheet" href="./usability.css" />
 </head>
 <body>
   <canvas id="starfield" aria-hidden="true"></canvas>
 
   <header class="site-header" id="siteHeader">
-    <a href="#opening" class="monogram" aria-label="Kembali ke awal">A / N</a>
-    <button class="menu-button" id="menuButton" aria-label="Buka menu" aria-expanded="false">MENU</button>
+    <a href="#opening" class="monogram" aria-label="Kembali ke awal">A / S</a>
+    <button class="menu-button" id="menuButton" aria-label="Buka menu" aria-expanded="false" aria-controls="menuOverlay">MENU</button>
   </header>
 
-  <nav class="menu-overlay" id="menuOverlay" aria-hidden="true">
+  <nav class="menu-overlay" id="menuOverlay" aria-label="Navigasi undangan" aria-hidden="true" inert>
     <button class="menu-close" id="menuClose" aria-label="Tutup menu">×</button>
     <div class="menu-inner">
       <span class="eyebrow">Navigate the story</span>
@@ -32,7 +38,7 @@
       <a href="#rsvp">RSVP</a>
       <a href="#guestbook">Guestbook</a>
     </div>
-    <button class="music-control" id="musicControl" type="button" aria-pressed="false">
+    <button class="music-control" id="musicControl" type="button" hidden aria-pressed="false">
       <span class="music-disc">♫</span>
       <span id="musicLabel">Play Music</span>
     </button>
@@ -171,11 +177,12 @@
             </span>
             <span class="envelope-front"></span>
             <span class="envelope-flap"></span>
-            <span class="wax-seal">A/N</span>
+            <span class="wax-seal">A/S</span>
           </button>
           <span class="swipe-hint">Swipe / tap to open</span>
         </div>
 
+        <p class="demo-note venue-note">Lokasi masih contoh. Alamat acara akan dikonfirmasi oleh pasangan.</p>
         <div class="event-cards" id="eventCards">
           <article class="event-card reveal-on-scroll">
             <span class="event-icon">✦</span>
@@ -185,7 +192,7 @@
             <div class="event-divider"></div>
             <p class="venue">The Harmony Hall</p>
             <p>Bandung, Jawa Barat</p>
-            <a class="pill-button" href="https://maps.google.com" target="_blank" rel="noreferrer">View Location</a>
+            <a class="pill-button" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Harmony%20Hall%2C%20Bandung%2C%20Jawa%20Barat" target="_blank" rel="noreferrer">Cari Lokasi</a>
           </article>
 
           <article class="event-card reveal-on-scroll">
@@ -196,7 +203,7 @@
             <div class="event-divider"></div>
             <p class="venue">The Harmony Hall</p>
             <p>Bandung, Jawa Barat</p>
-            <a class="pill-button" href="https://maps.google.com" target="_blank" rel="noreferrer">View Location</a>
+            <a class="pill-button" href="https://www.google.com/maps/search/?api=1&amp;query=The%20Harmony%20Hall%2C%20Bandung%2C%20Jawa%20Barat" target="_blank" rel="noreferrer">Cari Lokasi</a>
           </article>
         </div>
       </div>
@@ -237,6 +244,7 @@
       <div class="rsvp-inner reveal-on-scroll">
         <p class="eyebrow">One tiny answer means a lot to us</p>
         <h2>Will you be there<br>when our next chapter begins?</h2>
+        <p class="demo-note">Mode demo: pilihan disimpan di browser ini, belum dikirim ke pasangan.</p>
         <div class="rsvp-buttons" role="group" aria-label="Konfirmasi kehadiran">
           <button class="rsvp-option primary" data-rsvp="hadir">I'll Be There</button>
           <button class="rsvp-option secondary" data-rsvp="tidak">Sending My Love</button>
@@ -256,6 +264,7 @@
         <div class="wish-sky" id="wishSky" aria-label="Langit ucapan tamu"></div>
 
         <form class="wish-form reveal-on-scroll" id="wishForm">
+          <p class="demo-note">Mode demo: ucapan hanya tampil di browser ini, belum dikirim ke pasangan.</p>
           <label>
             <span>Your Name</span>
             <input id="guestName" name="guestName" type="text" maxlength="40" placeholder="Nama kamu" required />
@@ -265,6 +274,7 @@
             <textarea id="guestMessage" name="guestMessage" maxlength="180" placeholder="Tulis ucapanmu di sini..." required></textarea>
           </label>
           <button class="pill-button solid" type="submit">Add to Our Sky</button>
+          <p id="wishStatus" class="form-status" role="status"></p>
         </form>
       </div>
     </section>
@@ -283,7 +293,7 @@
     </section>
   </main>
 
-  <div class="secret-modal" id="secretModal" aria-hidden="true">
+  <div class="secret-modal" id="secretModal" role="dialog" aria-modal="true" aria-label="Foto rahasia" aria-hidden="true" inert>
     <button class="secret-close" id="secretClose" aria-label="Tutup foto rahasia">×</button>
     <div class="secret-card">
       <p class="eyebrow">You found it.</p>
@@ -299,7 +309,13 @@
     <!-- Ganti src dengan file musik milikmu sendiri. -->
   </audio>
 
+  <script src="./ui.js" defer></script>
   <script src="./script.js" defer></script>
   <script src="./premium.js" defer></script>
+  <script src="./experience.js" defer></script>
+  <script src="./chapters.js" defer></script>
+  <script src="./flow.js" defer></script>
+  <script src="./continuity-fix.js" defer></script>
+  <script src="./immersion.js" defer></script>
 </body>
 </html>

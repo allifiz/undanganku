@@ -106,11 +106,13 @@
   const menuOverlay = $('#menuOverlay');
 
   function setMenu(open) {
-    if (!menuOverlay || !menuButton) return;
+    if (!menuOverlay || !menuButton || menuOverlay.classList.contains('open') === open) return;
     menuOverlay.classList.toggle('open', open);
     menuOverlay.setAttribute('aria-hidden', String(!open));
     menuButton.setAttribute('aria-expanded', String(open));
     document.body.classList.toggle('menu-open', open);
+    if (open) window.InvitationUI.openDialog(menuOverlay, menuClose);
+    else window.InvitationUI.closeDialog(menuOverlay);
   }
 
   menuButton?.addEventListener('click', () => setMenu(true));
@@ -257,24 +259,36 @@
    * ----------------------------------------------------- */
   const envelope = $('#envelope');
   let envelopePointerStart = null;
+  let suppressEnvelopeClick = false;
 
   function openEnvelope() {
     if (!envelope) return;
     const isOpen = envelope.classList.toggle('open');
     envelope.setAttribute('aria-expanded', String(isOpen));
+    envelope.setAttribute('aria-label', isOpen ? 'Tutup undangan' : 'Buka undangan');
   }
 
-  envelope?.addEventListener('click', openEnvelope);
+  envelope?.addEventListener('click', () => {
+    if (suppressEnvelopeClick) { suppressEnvelopeClick = false; return; }
+    openEnvelope();
+  });
   envelope?.addEventListener('pointerdown', (event) => {
+    suppressEnvelopeClick = false;
     envelopePointerStart = { x: event.clientX, y: event.clientY };
+    envelope.setPointerCapture(event.pointerId);
   });
   envelope?.addEventListener('pointerup', (event) => {
     if (!envelopePointerStart) return;
     const dy = envelopePointerStart.y - event.clientY;
     const dx = Math.abs(envelopePointerStart.x - event.clientX);
-    if (dy > 38 && dx < 80 && !envelope.classList.contains('open')) openEnvelope();
+    if (dy > 38 && dx < 80 && !envelope.classList.contains('open')) {
+      openEnvelope();
+      suppressEnvelopeClick = true;
+    }
     envelopePointerStart = null;
   });
+
+  envelope?.addEventListener('pointercancel', () => { envelopePointerStart = null; suppressEnvelopeClick = false; });
 
   /* -------------------------------------------------------
    * Gallery. Native overflow does the actual movement.
@@ -299,18 +313,25 @@
   const rsvpResponse = $('#rsvpResponse');
 
   function setRsvp(value) {
-    rsvpButtons.forEach((button) => button.classList.toggle('selected', button.dataset.rsvp === value));
-    localStorage.setItem('undanganku:rsvp', value);
+    if (!['hadir', 'tidak'].includes(value)) return;
+    rsvpButtons.forEach((button) => {
+      const selected = button.dataset.rsvp === value;
+      button.classList.toggle('selected', selected);
+      button.setAttribute('aria-pressed', String(selected));
+    });
+    const saved = window.InvitationUI.save('undanganku:rsvp', value);
 
     if (rsvpResponse) {
       rsvpResponse.textContent = value === 'hadir'
         ? 'Kami akan menunggumu di sana. Terima kasih sudah menjadi bagian dari hari kami ♡'
         : 'Cintamu tetap sampai. Terima kasih sudah mengirimkan doa terbaikmu ♡';
+      if (!saved) rsvpResponse.textContent += ' Penyimpanan browser tidak tersedia; pilihan hanya berlaku selama halaman ini terbuka.';
     }
   }
 
   rsvpButtons.forEach((button) => button.addEventListener('click', () => setRsvp(button.dataset.rsvp)));
-  const savedRsvp = localStorage.getItem('undanganku:rsvp');
+  rsvpButtons.forEach((button) => button.setAttribute('aria-pressed', 'false'));
+  const savedRsvp = window.InvitationUI.load('undanganku:rsvp');
   if (savedRsvp) setRsvp(savedRsvp);
 
   /* -------------------------------------------------------
@@ -331,8 +352,13 @@
 
   function loadWishes() {
     try {
-      const stored = JSON.parse(localStorage.getItem('undanganku:wishes') || 'null');
-      return Array.isArray(stored) && stored.length ? stored : defaultWishes;
+      const stored = JSON.parse(window.InvitationUI.load('undanganku:wishes') || 'null');
+      const valid = Array.isArray(stored) ? stored.filter((wish) =>
+        wish && typeof wish.name === 'string' && typeof wish.message === 'string' &&
+        wish.name.trim() && wish.message.trim()).slice(-60).map((wish) => ({
+          name: wish.name.slice(0, 40), message: wish.message.slice(0, 180),
+        })) : [];
+      return valid.length ? valid : defaultWishes;
     } catch (_) {
       return defaultWishes;
     }
@@ -352,13 +378,13 @@
 
   function renderWishes() {
     if (!wishSky) return;
-    wishSky.innerHTML = '<div class="wish-popover" id="wishPopover"><p></p><small></small></div>';
+    wishSky.innerHTML = '<div class="wish-popover" id="wishPopover" role="status" aria-hidden="true"><p></p><small></small></div>';
     const popover = $('#wishPopover', wishSky);
 
     wishes.slice(-42).forEach((wish, index) => {
       const hash = hashWish(wish, index);
       const x = 7 + (hash % 86);
-      const y = 7 + ((hash >> 7) % 82);
+      const y = 7 + ((hash >>> 7) % 82);
       const star = document.createElement('button');
       star.type = 'button';
       star.className = 'wish-star';
@@ -372,11 +398,12 @@
         $('p', popover).textContent = `“${wish.message}”`;
         $('small', popover).textContent = `— ${wish.name}`;
         const skyRect = wishSky.getBoundingClientRect();
-        const leftPx = Math.min(Math.max(14, (x / 100) * skyRect.width - 100), skyRect.width - 274);
-        const topPx = Math.min(Math.max(14, (y / 100) * skyRect.height + 18), skyRect.height - 120);
+        const leftPx = Math.max(14, Math.min((x / 100) * skyRect.width - popover.offsetWidth / 2, skyRect.width - popover.offsetWidth - 14));
+        const topPx = Math.max(14, Math.min((y / 100) * skyRect.height + 24, skyRect.height - popover.offsetHeight - 14));
         popover.style.left = `${leftPx}px`;
         popover.style.top = `${topPx}px`;
         popover.classList.add('show');
+        popover.setAttribute('aria-hidden', 'false');
       };
 
       star.addEventListener('click', showWish);
@@ -389,17 +416,25 @@
     event.preventDefault();
     const name = guestName?.value.trim();
     const message = guestMessage?.value.trim();
-    if (!name || !message) return;
+    if (!name || !message) {
+      $('#wishStatus').textContent = 'Isi nama dan ucapan, bukan hanya spasi.';
+      (!name ? guestName : guestMessage)?.focus();
+      return;
+    }
 
     wishes.push({ name, message });
     wishes = wishes.slice(-60);
-    localStorage.setItem('undanganku:wishes', JSON.stringify(wishes));
+    const saved = window.InvitationUI.save('undanganku:wishes', JSON.stringify(wishes));
+    $('#wishStatus').textContent = saved
+      ? 'Ucapan ditambahkan ke langit dan disimpan di browser ini. Belum dikirim ke pasangan.'
+      : 'Ucapan tampil untuk sesi ini. Penyimpanan browser tidak tersedia; belum dikirim ke pasangan.';
     wishForm.reset();
     renderWishes();
 
     requestAnimationFrame(() => {
       const stars = $$('.wish-star', wishSky);
       const newest = stars[stars.length - 1];
+      newest?.focus({ preventScroll: true });
       newest?.animate(
         [
           { transform: 'scale(0)', opacity: 0 },
@@ -412,6 +447,12 @@
   });
 
   renderWishes();
+  wishSky?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    const popover = $('#wishPopover', wishSky);
+    popover?.classList.remove('show');
+    popover?.setAttribute('aria-hidden', 'true');
+  });
 
   /* -------------------------------------------------------
    * Optional music control. No autoplay, no network request
@@ -421,6 +462,7 @@
   const musicLabel = $('#musicLabel');
   const backgroundMusic = $('#backgroundMusic');
 
+  if (musicControl) musicControl.hidden = !(backgroundMusic?.getAttribute('src') || backgroundMusic?.querySelector('source[src]'));
   musicControl?.addEventListener('click', async () => {
     if (!backgroundMusic?.getAttribute('src') && !backgroundMusic?.querySelector('source')) {
       if (musicLabel) musicLabel.textContent = 'Add your music file';
@@ -461,13 +503,15 @@
     secretModal.classList.add('open');
     secretModal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
+    window.InvitationUI.openDialog(secretModal, secretClose);
   }
 
   function closeSecret() {
-    if (!secretModal) return;
+    if (!secretModal?.classList.contains('open')) return;
     secretModal.classList.remove('open');
     secretModal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('modal-open');
+    window.InvitationUI.closeDialog(secretModal);
   }
 
   secretTrigger?.addEventListener('click', () => {

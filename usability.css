@@ -1,0 +1,108 @@
+/* Final, shared layout and accessibility rules for the cinematic layers. */
+html { overflow-x: clip; }
+body { overflow-x: clip; }
+[hidden] { display: none !important; }
+
+/* Curtains must not increase the page's scrollable width before they enter. */
+.invitation-section .scene-curtain,
+.rsvp-section .scene-curtain { transform: scaleY(1.16); }
+.invitation-section.chapter-entered .scene-curtain,
+.rsvp-section.chapter-entered .scene-curtain { transform: scaleY(.82); }
+
+.section { scroll-margin-top: var(--header-h); }
+/* The old 430px bridge painted over the previous section's controls and
+   the next section's heading. Keep transitions inside their own top padding. */
+.section:not(.opening)::before { top: 0 !important; height: 80px !important; }
+.names-reveal.show { max-height: 420px; padding-bottom: 24px; }
+.section-shell > *, .invitation-wrap > *, .timeline-item > * { min-width: 0; }
+.cover-guest-name, .wish-popover, .form-status { overflow-wrap: anywhere; }
+
+/* An opening control must stay reachable on short screens and at text zoom. */
+.invitation-cover { overflow-y: auto; overscroll-behavior: contain; }
+.cover-inner { max-width: 100%; flex-shrink: 0; margin-block: auto; }
+.cover-inner > * { flex-shrink: 0; }
+.cover-guest { max-width: 100%; }
+.cover-date, .cover-guest-label, .cover-hint { color: #bcb7ad; }
+.cover-open-copy, .cover-kicker { color: #dfcda9; font-size: 11px; }
+.experience-ready .opening .scroll-cue { opacity: .85; }
+.opening .scroll-cue { color: #dbd3c4; font-size: 11px; }
+.timeline-item:not(.chapter-active) { opacity: 1; }
+
+.menu-overlay { overflow-y: auto; padding: 84px 24px 100px; }
+.menu-inner { margin-block: auto; }
+.menu-button, .monogram, .menu-close, .secret-close, .secret-trigger { min-height: 44px; min-width: 44px; }
+.monogram { display: inline-flex; align-items: center; }
+.menu-inner a { min-height: 44px; }
+:where(a, button, [tabindex="0"]):focus-visible { outline: 2px solid #ae8542; outline-offset: 5px; }
+.dark :focus-visible, .menu-overlay :focus-visible, .immersion-viewer :focus-visible,
+.invitation-cover :focus-visible { outline-color: #f1d8a7; }
+.wish-form input, .wish-form textarea { font-size: 16px; }
+.wish-form input:focus-visible, .wish-form textarea:focus-visible { outline: 2px solid #8b6b3e; outline-offset: 2px; }
+
+.demo-note, .form-status { font: 400 13px/1.65 var(--sans); letter-spacing: 0; }
+.demo-note { margin: 14px auto; max-width: 540px; color: #66533f; }
+.venue-note { grid-column: 1 / -1; text-align: center; margin-bottom: -20px; }
+.wish-form .demo-note { margin: 0; }
+.form-status { margin: 0; }
+.form-status:empty { display: none; }
+.envelope { touch-action: pan-x; }
+
+/* Larger hit targets, with the same small stars drawn in their centers. */
+.wish-star {
+  width: 44px; height: 44px; margin: -22px 0 0 -22px;
+  background: transparent; box-shadow: none; animation: none;
+}
+.wish-star::before {
+  content: ''; position: absolute; width: 10px; height: 10px;
+  left: 17px; top: 17px; border-radius: 50%; background: #f6dfab;
+  box-shadow: 0 0 12px #f6dfab, 0 0 28px #f6dfab59;
+  animation: twinkle var(--twinkle, 4s) ease-in-out infinite alternate;
+}
+.wish-popover { max-height: calc(100% - 28px); overflow-y: auto; pointer-events: auto; visibility: hidden; }
+.wish-popover.show { visibility: visible; }
+
+/* Keep the center of the photo available for swipe and pull-down gestures. */
+.viewer-hit { top: 50%; bottom: auto; width: 48px; height: 48px; margin-top: -24px; border-radius: 50%; }
+.viewer-prev-hit { left: clamp(10px, 2vw, 24px); }
+.viewer-next-hit { right: clamp(10px, 2vw, 24px); }
+.viewer-counter { font-size: 11px; }
+.viewer-kicker, .viewer-gesture-hint { font-size: 10px; color: #c2b9a9; }
+.viewer-stage, .viewer-image-wrap { min-height: 0; }
+.viewer-image { max-height: min(65svh, 100%); }
+.viewer-memory { display: none; }
+.memory-visible .viewer-memory { display: block; }
+.secret-modal { overflow-y: auto; padding-block: 90px 40px; }
+
+@media (max-width: 680px) {
+  .timeline-item { grid-template-columns: 30px minmax(0, 1fr); gap: 14px; }
+  .timeline-item.left .photo-frame, .timeline-item.right .photo-frame { width: min(290px, 100%); max-width: 100%; }
+  .gallery-heading h2 { font-size: clamp(56px, 17vw, 78px); line-height: .95; }
+  .guestbook-intro h2 { font-size: clamp(42px, 12vw, 64px); line-height: 1; }
+  .closing-inner h2 { font-size: clamp(54px, 16vw, 76px); }
+  .names-reveal h2 { font-size: clamp(42px, 12vw, 66px); }
+  .viewer-hit { width: 48px; }
+  .viewer-topbar { gap: 12px; }
+  .viewer-kicker { max-width: 55%; line-height: 1.6; }
+  .viewer-footer { gap: 12px; padding-bottom: max(42px, env(safe-area-inset-bottom)); }
+  .viewer-gesture-hint { max-width: 90vw; text-align: center; white-space: normal; }
+}
+
+@media (max-height: 650px) {
+  .invitation-cover { place-items: start center; }
+  .cover-inner { min-height: 100svh; padding-block: 24px; }
+  .cover-names { font-size: clamp(52px, 12vh, 80px); }
+  .cover-kicker { margin-bottom: 18px; }
+  .cover-guest { margin-top: 20px; }
+  .cover-seal-button { width: 88px; height: 88px; margin-top: 18px; }
+  .cover-hint { margin-top: 16px; }
+  .menu-inner { gap: 8px; }
+  .menu-inner a { font-size: 38px; }
+  .viewer-image { max-height: 52svh; }
+  .viewer-footer { padding-bottom: 34px; }
+  .viewer-memory { max-height: 50px; overflow-y: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wish-star::before { animation: none; }
+  .reveal-on-scroll, .reveal-up { opacity: 1; transform: none; }
+}
