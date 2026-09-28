@@ -68,7 +68,8 @@ body { overflow-x: clip; }
 .viewer-counter { font-size: 11px; }
 .viewer-kicker, .viewer-gesture-hint { font-size: 10px; color: #c2b9a9; }
 .viewer-stage, .viewer-image-wrap { min-height: 0; }
-.viewer-image { max-height: min(65svh, 100%); }
+.viewer-image-wrap { grid-template-rows: minmax(0, 1fr); }
+.viewer-image { max-height: 65svh; }
 .viewer-memory { display: none; }
 .memory-visible .viewer-memory { display: block; }
 .secret-modal { overflow-y: auto; padding-block: 90px 40px; }
