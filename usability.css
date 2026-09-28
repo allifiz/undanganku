@@ -18,8 +18,9 @@ body { overflow-x: clip; }
 .cover-guest-name, .wish-popover, .form-status { overflow-wrap: anywhere; }
 
 /* An opening control must stay reachable on short screens and at text zoom. */
-.invitation-cover { overflow-y: auto; overscroll-behavior: contain; }
-.cover-inner { max-width: 100%; flex-shrink: 0; margin-block: auto; }
+.invitation-cover { overflow: hidden; overscroll-behavior: contain; }
+.cover-inner { max-width: 100%; max-height: 100%; overflow-y: auto; flex-shrink: 0; margin-block: auto; }
+html:has(body.invite-locked, body.menu-open, body.modal-open, body.immersive-open) { overflow-y: hidden; }
 .cover-inner > * { flex-shrink: 0; }
 .cover-guest { max-width: 100%; }
 .cover-date, .cover-guest-label, .cover-hint { color: #bcb7ad; }
@@ -70,18 +71,26 @@ body { overflow-x: clip; }
 .viewer-stage, .viewer-image-wrap { min-height: 0; }
 .viewer-image-wrap { grid-template-rows: minmax(0, 1fr); }
 .viewer-image { max-height: 65svh; }
+.viewer-media, .viewer-image-wrap { min-width: 0; }
+.viewer-image { max-width: 100%; }
 .viewer-memory { display: none; }
 .memory-visible .viewer-memory { display: block; }
 .secret-modal { overflow-y: auto; padding-block: 90px 40px; }
 
+@media (max-width: 860px) {
+  /* The decorative layer restores position:relative; clear the old sticky offset. */
+  .invitation-intro, .guestbook-intro { top: auto; }
+}
+
 @media (max-width: 680px) {
   .timeline-item { grid-template-columns: 30px minmax(0, 1fr); gap: 14px; }
-  .timeline-item.left .photo-frame, .timeline-item.right .photo-frame { width: min(290px, 100%); max-width: 100%; }
+  .timeline-item.left .photo-frame, .timeline-item.right .photo-frame { width: min(290px, 100%); max-width: 100%; margin-inline: 0; }
   .gallery-heading h2 { font-size: clamp(56px, 17vw, 78px); line-height: .95; }
   .guestbook-intro h2 { font-size: clamp(42px, 12vw, 64px); line-height: 1; }
   .closing-inner h2 { font-size: clamp(54px, 16vw, 76px); }
   .names-reveal h2 { font-size: clamp(42px, 12vw, 66px); }
   .viewer-hit { width: 48px; }
+  .viewer-arrow { display: grid; }
   .viewer-topbar { gap: 12px; }
   .viewer-kicker { max-width: 55%; line-height: 1.6; }
   .viewer-footer { gap: 12px; padding-bottom: max(42px, env(safe-area-inset-bottom)); }
