@@ -15,6 +15,7 @@ body { overflow-x: clip; }
 .section:not(.opening)::before { top: 0 !important; height: 80px !important; }
 .names-reveal.show { max-height: 420px; padding-bottom: 24px; }
 .section-shell > *, .invitation-wrap > *, .timeline-item > * { min-width: 0; }
+.photo-frame { margin-inline: 0; }
 .cover-guest-name, .wish-popover, .form-status { overflow-wrap: anywhere; }
 
 /* An opening control must stay reachable on short screens and at text zoom. */
@@ -82,16 +83,16 @@ html:has(body.invite-locked, body.menu-open, body.modal-open, body.immersive-ope
   .invitation-intro, .guestbook-intro { top: auto; }
   .envelope-stage { min-height: 0; padding: clamp(100px, 20vw, 160px) 0 48px; row-gap: 32px; }
   .event-unsealed .envelope-stage::after { bottom: 12px; }
-  /* Stack the interlude's copy and revealed notes instead of overlapping
-     three absolutely positioned text layers on narrow screens. */
-  .photo-story { display: flex; flex-direction: column; justify-content: flex-end; gap: 24px; padding: 48px 18px; }
-  .photo-story-copy { order: 1; width: 100%; margin-top: 30svh; transform: none !important; }
-  .photo-story-depth-copy { order: 2; position: relative; left: auto; bottom: auto; max-width: 100%; margin: 0; text-align: center; display: none; }
-  .photo-story.photo-story-depth .photo-story-depth-copy { display: block; }
-  .photo-secret-panel { order: 3; position: relative; left: auto; bottom: auto; width: 100%; transform: none; }
-  .photo-secret-note { display: none; }
-  .photo-secret-open .photo-secret-note { display: block; }
 }
+
+/* Keep the interlude heading, control and revealed notes in document flow. */
+.photo-story { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 24px; padding: 48px 18px; }
+.photo-story-copy { order: 1; width: min(620px, 100%); margin-top: 30svh; transform: none !important; }
+.photo-story-depth-copy { order: 2; position: relative; left: auto; bottom: auto; max-width: min(620px, 100%); margin: 0; text-align: center; display: none; }
+.photo-story.photo-story-depth .photo-story-depth-copy { display: block; }
+.photo-secret-panel { order: 3; position: relative; left: auto; bottom: auto; width: min(520px, 100%); transform: none; }
+.photo-secret-note { display: none; }
+.photo-secret-open .photo-secret-note { display: block; }
 
 @media (max-width: 680px) {
   .timeline-item { grid-template-columns: 30px minmax(0, 1fr); gap: 14px; }
