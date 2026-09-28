@@ -80,6 +80,15 @@ html:has(body.invite-locked, body.menu-open, body.modal-open, body.immersive-ope
 @media (max-width: 860px) {
   /* The decorative layer restores position:relative; clear the old sticky offset. */
   .invitation-intro, .guestbook-intro { top: auto; }
+  /* Stack the interlude's copy and revealed notes instead of overlapping
+     three absolutely positioned text layers on narrow screens. */
+  .photo-story { display: flex; flex-direction: column; justify-content: flex-end; gap: 24px; padding: 48px 18px; }
+  .photo-story-copy { order: 1; width: 100%; margin-top: 30svh; transform: none !important; }
+  .photo-story-depth-copy { order: 2; position: relative; left: auto; bottom: auto; max-width: 100%; margin: 0; text-align: center; display: none; }
+  .photo-story.photo-story-depth .photo-story-depth-copy { display: block; }
+  .photo-secret-panel { order: 3; position: relative; left: auto; bottom: auto; width: 100%; transform: none; }
+  .photo-secret-note { display: none; }
+  .photo-secret-open .photo-secret-note { display: block; }
 }
 
 @media (max-width: 680px) {
