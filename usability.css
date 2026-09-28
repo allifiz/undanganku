@@ -80,6 +80,8 @@ html:has(body.invite-locked, body.menu-open, body.modal-open, body.immersive-ope
 @media (max-width: 860px) {
   /* The decorative layer restores position:relative; clear the old sticky offset. */
   .invitation-intro, .guestbook-intro { top: auto; }
+  .envelope-stage { min-height: 0; padding: clamp(100px, 20vw, 160px) 0 48px; row-gap: 32px; }
+  .event-unsealed .envelope-stage::after { bottom: 12px; }
   /* Stack the interlude's copy and revealed notes instead of overlapping
      three absolutely positioned text layers on narrow screens. */
   .photo-story { display: flex; flex-direction: column; justify-content: flex-end; gap: 24px; padding: 48px 18px; }
