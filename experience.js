@@ -29,7 +29,7 @@
     <div class="cover-flash" aria-hidden="true"></div>
     <div class="cover-inner">
       <p class="cover-kicker">The Wedding Of</p>
-      <h1 class="cover-names"><span>Alief</span><em>&</em><span>Naya</span></h1>
+      <h1 class="cover-names"><span>Alief</span><em>&</em><span>Sinta</span></h1>
       <p class="cover-date">12 · 12 · 2026</p>
       <div class="cover-guest">
         <span class="cover-guest-label">Kepada Yth.</span>
